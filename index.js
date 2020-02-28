@@ -114,6 +114,10 @@ Promise.prototype.then = function(onFulfilled, onRejected) {
   return promise2
 }
 
+Promise.prototype.catch = function(onRejected) {
+  this.then(null, onRejected)
+}
+
 function resolvePromise(promise2, x, resolve, reject) {
   // 判断 promise2 与 x 是否相等，防止循环引用，状态无法被改变
   if(promise2 === x) {
