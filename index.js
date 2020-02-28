@@ -124,13 +124,7 @@ function resolvePromise(promise2, x, resolve, reject) {
     return reject(new TypeError('循环引用'))
   }
   let onece; // 用来记录调用 （只能调用一次）
-  if(x instanceof Promise) {
-    if(x.status === PENDING) { // 如果 x 还是一个 promise 的情况，调用 then 方法递归
-      x.then(function(y) {
-        resolvePromise(promise2, x, resolve, reject)
-      }, reject)
-    }
-  }else if(x && typeof x === 'object' || typeof x === 'function') { // 如果有 then 方法就执行
+  if(x && typeof x === 'object' || typeof x === 'function') { // 如果有 then 方法就执行
     try {
       let then = x.then
       if(typeof then === 'function') { // 如果返回的 then 还是一个函数
@@ -144,6 +138,8 @@ function resolvePromise(promise2, x, resolve, reject) {
           reject(err)
         })
       }else { // 如果 then 不是一个函数，直接返回该结果
+        if(onece)return // 只能调用一次
+        onece = true
         resolve(x)
       }
     }catch {
